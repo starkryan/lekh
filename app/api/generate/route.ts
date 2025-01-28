@@ -1,5 +1,3 @@
-// Install OpenAI SDK first: `npm install openai`
-
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
@@ -98,9 +96,36 @@ Estimated Word Count: [Word count]
     default: "You are a helpful assistant."
 };
 
-export async function POST(request) {
+type SystemPromptKey = keyof typeof SYSTEM_PROMPTS;
+
+function isSystemPromptKey(key: string): key is SystemPromptKey {
+    return Object.keys(SYSTEM_PROMPTS).includes(key);
+}
+
+interface RequestBody {
+    message: string;
+    type?: string;
+    emailOptions?: {
+        style?: string;
+        purpose?: string;
+        ageGroup?: string;
+        recipientName?: string;
+        context?: string;
+    };
+    youtubeOptions?: {
+        videoType?: string;
+        targetAudience?: string;
+        contentStyle?: string;
+        duration?: string;
+        platform?: string;
+        toneStyle?: string;
+        context?: string;
+    };
+}
+
+export async function POST(request: Request) {
     try {
-        const body = await request.json();
+        const body = await request.json() as RequestBody;
 
         if (!body.message) {
             return NextResponse.json(
@@ -109,10 +134,15 @@ export async function POST(request) {
             );
         }
 
-        let systemPrompt = SYSTEM_PROMPTS[body.type] || SYSTEM_PROMPTS.default;
+        // Validate and determine prompt type
+        const promptType = body.type && isSystemPromptKey(body.type) 
+            ? body.type 
+            : 'default';
 
-        // Replace email parameters if present
-        if (body.type === 'email' && body.emailOptions) {
+        let systemPrompt = SYSTEM_PROMPTS[promptType];
+
+        // Handle email parameters
+        if (promptType === 'email' && body.emailOptions) {
             const recipientName = body.emailOptions.recipientName?.trim() || 'Valued Recipient';
             systemPrompt = systemPrompt
                 .replace(/{style}/g, body.emailOptions.style || 'Professional')
@@ -122,13 +152,20 @@ export async function POST(request) {
                 .replace(/{context}/g, body.emailOptions.context || 'Standard communication');
         }
 
-        // Replace YouTube parameters if present
-        if (body.type === 'youtube' && body.youtubeOptions) {
-            const { videoType, targetAudience, contentStyle, duration, platform, toneStyle, context } = body.youtubeOptions;
-            
-            // Calculate intro and outro times based on duration
+        // Handle YouTube parameters
+        if (promptType === 'youtube' && body.youtubeOptions) {
+            const { 
+                videoType = 'Tutorial',
+                targetAudience = 'General',
+                contentStyle = 'Informative',
+                duration = 'Medium',
+                platform = 'YouTube',
+                toneStyle = 'Casual',
+                context = ''
+            } = body.youtubeOptions;
+
             let introTime, outroTime;
-            switch(duration) {
+            switch(duration.toLowerCase()) {
                 case 'short':
                     introTime = '0:00-0:10';
                     outroTime = '0:50-1:00';
@@ -151,13 +188,13 @@ export async function POST(request) {
             }
 
             systemPrompt = systemPrompt
-                .replace(/{videoType}/g, videoType || 'Tutorial')
-                .replace(/{targetAudience}/g, targetAudience || 'General')
-                .replace(/{contentStyle}/g, contentStyle || 'Informative')
-                .replace(/{duration}/g, duration || 'Medium')
-                .replace(/{platform}/g, platform || 'YouTube')
-                .replace(/{toneStyle}/g, toneStyle || 'Casual')
-                .replace(/{context}/g, context || '')
+                .replace(/{videoType}/g, videoType)
+                .replace(/{targetAudience}/g, targetAudience)
+                .replace(/{contentStyle}/g, contentStyle)
+                .replace(/{duration}/g, duration)
+                .replace(/{platform}/g, platform)
+                .replace(/{toneStyle}/g, toneStyle)
+                .replace(/{context}/g, context)
                 .replace(/{introTime}/g, introTime)
                 .replace(/{outroTime}/g, outroTime);
         }
@@ -175,38 +212,33 @@ export async function POST(request) {
 
         const stream = new ReadableStream({
             async start(controller) {
+                let isStreamClosed = false;
+
+                const closeStream = () => {
+                    if (!isStreamClosed) {
+                        controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
+                        controller.close();
+                        isStreamClosed = true;
+                    }
+                };
+
                 try {
-                    let isStreamClosed = false;
-
-                    const closeStream = () => {
-                        if (!isStreamClosed) {
-                            controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
-                            controller.close();
-                            isStreamClosed = true;
-                        }
-                    };
-
-                    try {
-                        for await (const chunk of completion) {
-                            if (isStreamClosed) break;
-                            
-                            const content = chunk.choices[0]?.delta?.content || '';
-                            if (content) {
-                                const sseData = `data: ${JSON.stringify({ content })}\n\n`;
-                                controller.enqueue(encoder.encode(sseData));
-                            }
-                        }
-                        closeStream();
-                    } catch (err) {
-                        console.error("Chunk processing error:", err);
-                        if (!isStreamClosed) {
-                            controller.error(err);
-                            isStreamClosed = true;
+                    for await (const chunk of completion) {
+                        if (isStreamClosed) break;
+                        
+                        const content = chunk.choices[0]?.delta?.content || '';
+                        if (content) {
+                            controller.enqueue(encoder.encode(
+                                `data: ${JSON.stringify({ content })}\n\n`
+                            ));
                         }
                     }
-                } catch (err) {
-                    console.error("Streaming error:", err);
-                    controller.error(err);
+                    closeStream();
+                } catch (error) {
+                    console.error("Stream error:", error);
+                    if (!isStreamClosed) {
+                        controller.error(error);
+                    }
                 }
             }
         });
@@ -219,9 +251,9 @@ export async function POST(request) {
             }
         });
     } catch (error) {
-        console.error("Error:", error);
+        console.error("API error:", error);
         return NextResponse.json(
-            { error: "Failed to generate response." },
+            { error: "Failed to generate response. Please try again." },
             { status: 500 }
         );
     }
