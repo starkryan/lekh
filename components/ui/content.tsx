@@ -316,15 +316,15 @@ function Content() {
     return (
       <div className="space-y-6">
         <div className="space-y-2">
-          <h2 className="text-xl font-semibold text-primary">Subject</h2>
-          <p className="text-lg">{emailParts.subject}</p>
+          <h2 className="text-lg sm:text-xl font-semibold text-primary">Subject</h2>
+          <p className="text-base sm:text-lg">{emailParts.subject}</p>
         </div>
 
         <Separator />
 
         <div className="space-y-2">
-          <h2 className="text-xl font-semibold text-primary">Email Content</h2>
-          <div className="prose prose-sm dark:prose-invert max-w-none bg-card rounded-lg p-4 border">
+          <h2 className="text-lg sm:text-xl font-semibold text-primary">Email Content</h2>
+          <div className="prose prose-xs sm:prose-sm dark:prose-invert max-w-none bg-card rounded-lg p-3 sm:p-4 border">
             <ReactMarkdown>{emailParts.content || ""}</ReactMarkdown>
           </div>
         </div>
@@ -334,21 +334,21 @@ function Content() {
             <Separator />
 
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-primary flex items-center gap-2">
-                <Info className="w-5 h-5" />
+              <h2 className="text-lg sm:text-xl font-semibold text-primary flex items-center gap-2">
+                <Info className="w-4 h-4 sm:w-5 sm:h-5" />
                 Analysis
               </h2>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Formality</p>
-                  <Badge variant="secondary">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-1 sm:space-y-2">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Formality</p>
+                  <Badge variant="secondary" className="text-xs sm:text-sm">
                     {emailParts.analysis.formality}
                   </Badge>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Purpose</p>
-                  <Badge variant="secondary">
+                <div className="space-y-1 sm:space-y-2">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Purpose</p>
+                  <Badge variant="secondary" className="text-xs sm:text-sm">
                     {emailParts.analysis.purpose}
                   </Badge>
                 </div>
@@ -357,10 +357,10 @@ function Content() {
               {emailParts.analysis.keyPoints &&
                 emailParts.analysis.keyPoints.length > 0 && (
                   <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">Key Points</p>
-                    <ul className="list-none space-y-2">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Key Points</p>
+                    <ul className="list-none space-y-1 sm:space-y-2">
                       {emailParts.analysis.keyPoints.map((point, index) => (
-                        <li key={index} className="flex items-start gap-2">
+                        <li key={index} className="flex items-start gap-2 text-xs sm:text-sm">
                           <span className="text-primary">•</span>
                           <span>{point}</span>
                         </li>
@@ -385,11 +385,11 @@ function Content() {
         <Button
           variant="outline"
           size="sm"
-          className="flex items-center gap-2 mb-4"
+          className="flex items-center gap-2 mb-4 text-xs sm:text-sm"
         >
-          <Settings2 className="w-4 h-4" />
+          <Settings2 className="w-3 h-3 sm:w-4 sm:h-4" />
           Email Options
-          <Badge variant="secondary" className="ml-2">
+          <Badge variant="secondary" className="ml-2 text-xs">
             {showEmailOptions ? "Hide" : "Show"}
           </Badge>
         </Button>
@@ -397,10 +397,10 @@ function Content() {
       <CollapsibleContent className="space-y-4">
         <div className="flex items-center justify-between mb-4 bg-muted/50 p-3 rounded-lg">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary" />
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
             <div>
-              <p className="text-sm font-medium">Auto-Enhance</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs sm:text-sm font-medium">Auto-Enhance</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 Automatically improve your prompts as you type
               </p>
             </div>
@@ -411,9 +411,9 @@ function Content() {
             aria-label="Toggle auto-enhance"
           />
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label>Style</Label>
+            <Label className="text-xs sm:text-sm">Style</Label>
             <Select
               value={emailOptions.style}
               onValueChange={(value) =>
@@ -434,7 +434,7 @@ function Content() {
           </div>
 
           <div className="space-y-2">
-            <Label>Purpose</Label>
+            <Label className="text-xs sm:text-sm">Purpose</Label>
             <Select
               value={emailOptions.purpose}
               onValueChange={(value) =>
@@ -455,7 +455,7 @@ function Content() {
           </div>
 
           <div className="space-y-2">
-            <Label>Age Group</Label>
+            <Label className="text-xs sm:text-sm">Age Group</Label>
             <Select
               value={emailOptions.ageGroup}
               onValueChange={(value) =>
@@ -475,7 +475,7 @@ function Content() {
           </div>
 
           <div className="space-y-2">
-            <Label>Recipient Name</Label>
+            <Label className="text-xs sm:text-sm">Recipient Name</Label>
             <Input
               placeholder="Enter recipient name"
               value={emailOptions.recipientName}
@@ -490,14 +490,14 @@ function Content() {
         </div>
 
         <div className="space-y-2 mb-8">
-          <Label>Additional Context</Label>
+          <Label className="text-xs sm:text-sm">Additional Context</Label>
           <Textarea
             placeholder="Any additional context or special instructions..."
             value={emailOptions.context}
             onChange={(e) =>
               setEmailOptions((prev) => ({ ...prev, context: e.target.value }))
             }
-            className="min-h-[80px]"
+            className="min-h-[80px] text-xs sm:text-sm"
           />
         </div>
       </CollapsibleContent>
@@ -514,11 +514,11 @@ function Content() {
         <Button
           variant="outline"
           size="sm"
-          className="flex items-center gap-2 mb-4"
+          className="flex items-center gap-2 mb-4 text-xs sm:text-sm"
         >
-          <Settings2 className="w-4 h-4" />
+          <Settings2 className="w-3 h-3 sm:w-4 sm:h-4" />
           Youtube Options
-          <Badge variant="secondary" className="ml-2">
+          <Badge variant="secondary" className="ml-2 text-xs">
             {showYouTubeOptions ? "Hide" : "Show"}
           </Badge>
         </Button>
@@ -526,10 +526,10 @@ function Content() {
       <CollapsibleContent className="space-y-4">
         <div className="flex items-center justify-between mb-4 bg-muted/50 p-3 rounded-lg">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary" />
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
             <div>
-              <p className="text-sm font-medium">Auto-Enhance</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs sm:text-sm font-medium">Auto-Enhance</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 Automatically improve your prompts as you type
               </p>
             </div>
@@ -540,9 +540,9 @@ function Content() {
             aria-label="Toggle auto-enhance"
           />
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label>Video Type</Label>
+            <Label className="text-xs sm:text-sm">Video Type</Label>
             <Select
               value={youtubeOptions.videoType}
               onValueChange={(value) =>
@@ -566,7 +566,7 @@ function Content() {
           </div>
 
           <div className="space-y-2">
-            <Label>Target Audience</Label>
+            <Label className="text-xs sm:text-sm">Target Audience</Label>
             <Select
               value={youtubeOptions.targetAudience}
               onValueChange={(value) =>
@@ -593,7 +593,7 @@ function Content() {
           </div>
 
           <div className="space-y-2">
-            <Label>Content Style</Label>
+            <Label className="text-xs sm:text-sm">Content Style</Label>
             <Select
               value={youtubeOptions.contentStyle}
               onValueChange={(value) =>
@@ -615,7 +615,7 @@ function Content() {
           </div>
 
           <div className="space-y-2">
-            <Label>Duration</Label>
+            <Label className="text-xs sm:text-sm">Duration</Label>
             <Select
               value={youtubeOptions.duration}
               onValueChange={(value) =>
@@ -635,7 +635,7 @@ function Content() {
           </div>
 
           <div className="space-y-2">
-            <Label>Platform</Label>
+            <Label className="text-xs sm:text-sm">Platform</Label>
             <Select
               value={youtubeOptions.platform}
               onValueChange={(value) =>
@@ -653,7 +653,7 @@ function Content() {
           </div>
 
           <div className="space-y-2">
-            <Label>Tone Style</Label>
+            <Label className="text-xs sm:text-sm">Tone Style</Label>
             <Select
               value={youtubeOptions.toneStyle}
               onValueChange={(value) =>
@@ -676,7 +676,7 @@ function Content() {
         </div>
 
         <div className="space-y-2 mb-8">
-          <Label>Additional Context</Label>
+          <Label className="text-xs sm:text-sm">Additional Context</Label>
           <Textarea
             placeholder="Any additional context or special instructions..."
             value={youtubeOptions.context}
@@ -686,7 +686,7 @@ function Content() {
                 context: e.target.value,
               }))
             }
-            className="min-h-[80px]"
+            className="min-h-[80px] text-xs sm:text-sm"
           />
         </div>
       </CollapsibleContent>
@@ -712,15 +712,15 @@ function Content() {
   });
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
+    <div className="container mx-auto p-2 sm:p-4 max-w-4xl">
       <Tabs defaultValue="email" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="email" className="flex items-center gap-2">
-            <Mail size={48} color="blue" className="w-4 h-4 " />
+          <TabsTrigger value="email" className="flex items-center gap-2 text-xs sm:text-sm">
+            <Mail size={48} color="blue" className="w-3 h-3 sm:w-4 sm:h-4" />
             Email Generator
           </TabsTrigger>
-          <TabsTrigger value="youtube" className="flex items-center gap-2">
-            <Youtube size={48} color="red" className="w-4 h-4" />
+          <TabsTrigger value="youtube" className="flex items-center gap-2 text-xs sm:text-sm">
+            <Youtube size={48} color="red" className="w-3 h-3 sm:w-4 sm:h-4" />
             YouTube Script
           </TabsTrigger>
         </TabsList>
@@ -742,7 +742,7 @@ function Content() {
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
                       disabled={isLoading}
-                      className="min-h-[120px] pr-[140px]"
+                      className="min-h-[120px] pr-[140px] text-xs sm:text-sm"
                       maxLength={MAX_CHARS}
                     />
                     <div className="absolute bottom-2 right-2 flex items-center gap-3">
@@ -780,21 +780,21 @@ function Content() {
                           {isEnhancing ? (
                             <>
                               <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
-                              <span className="text-xs font-medium">
+                              <span className="text-[10px] sm:text-xs font-medium">
                                 Enhancing...
                               </span>
                             </>
                           ) : (
                             <>
                               <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                              <span className="text-xs font-medium">
+                              <span className="text-[10px] sm:text-xs font-medium">
                                 Enhance
                               </span>
                             </>
                           )}
                         </Button>
                       )}
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-[10px] sm:text-xs text-muted-foreground">
                         {emailInput.length}/{MAX_CHARS}
                       </span>
                     </div>
@@ -850,7 +850,7 @@ function Content() {
                       value={youtubeInput}
                       onChange={(e) => setYoutubeInput(e.target.value)}
                       disabled={isLoading}
-                      className="min-h-[120px] pr-[140px]"
+                      className="min-h-[120px] pr-[140px] text-xs sm:text-sm"
                       maxLength={MAX_CHARS}
                     />
                     <div className="absolute bottom-2 right-2 flex items-center gap-3">
@@ -888,21 +888,21 @@ function Content() {
                           {isEnhancing ? (
                             <>
                               <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
-                              <span className="text-xs font-medium">
+                              <span className="text-[10px] sm:text-xs font-medium">
                                 Enhancing...
                               </span>
                             </>
                           ) : (
                             <>
                               <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                              <span className="text-xs font-medium">
+                              <span className="text-[10px] sm:text-xs font-medium">
                                 Enhance
                               </span>
                             </>
                           )}
                         </Button>
                       )}
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-[10px] sm:text-xs text-muted-foreground">
                         {youtubeInput.length}/{MAX_CHARS}
                       </span>
                     </div>
@@ -944,8 +944,8 @@ function Content() {
         {isLoading && thinking && (
           <Card className="mt-4 bg-muted/50">
             <CardContent className="pt-6 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-              <p className="text-muted-foreground animate-pulse">{thinking}</p>
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary animate-pulse" />
+              <p className="text-xs sm:text-sm text-muted-foreground animate-pulse">{thinking}</p>
             </CardContent>
           </Card>
         )}
@@ -953,7 +953,7 @@ function Content() {
         {error && (
           <Card className="mt-4 bg-destructive/10">
             <CardContent className="pt-6">
-              <p className="text-destructive">{error}</p>
+              <p className="text-xs sm:text-sm text-destructive">{error}</p>
             </CardContent>
           </Card>
         )}
@@ -961,57 +961,55 @@ function Content() {
         {response && !error && (
           <Card className="mt-4">
             <CardContent className="pt-6">
-              {response.includes("## Subject") ? (
-                renderEmailResponse()
-              ) : (
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <ReactMarkdown>{response}</ReactMarkdown>
-                </div>
-              )}
+              <div className="prose prose-xs sm:prose-sm dark:prose-invert max-w-none overflow-x-auto text-xs sm:text-sm">
+                <ReactMarkdown>{response}</ReactMarkdown>
+              </div>
             </CardContent>
-            <CardFooter className="flex justify-end gap-2 pt-4 border-t">
+            <CardFooter className="flex flex-col sm:flex-row justify-end gap-2 pt-4 border-t">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleRegenerate}
                 disabled={!lastPrompt || isLoading}
-                className="mr-auto bg-blue-500/10 hover:bg-blue-500 hover:text-white border-blue-500/20 text-blue-500 transition-all duration-200 group"
+                className="w-full sm:w-auto sm:mr-auto bg-blue-500/10 hover:bg-blue-500 hover:text-white border-blue-500/20 text-blue-500 transition-all duration-200 group"
               >
                 <RefreshCcw className="w-4 h-4 mr-2 group-hover:rotate-180 transition-transform duration-500" />
                 Regenerate
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={copyToClipboard}
-                className={cn(
-                  "flex items-center gap-2",
-                  isCopied && "text-green-500"
-                )}
-              >
-                {isCopied ? (
-                  <Check className="w-4 h-4" />
-                ) : (
-                  <Copy className="w-4 h-4" />
-                )}
-                {isCopied ? "Copied!" : "Copy"}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={downloadAsTxt}
-                className={cn(
-                  "flex items-center gap-2",
-                  isDownloaded && "text-green-500"
-                )}
-              >
-                {isDownloaded ? (
-                  <Check className="w-4 h-4" />
-                ) : (
-                  <Download className="w-4 h-4" />
-                )}
-                {isDownloaded ? "Downloaded!" : "Download"}
-              </Button>
+              <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={copyToClipboard}
+                  className={cn(
+                    "flex items-center gap-2 w-full sm:w-auto",
+                    isCopied && "text-green-500"
+                  )}
+                >
+                  {isCopied ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                  {isCopied ? "Copied!" : "Copy"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={downloadAsTxt}
+                  className={cn(
+                    "flex items-center gap-2 w-full sm:w-auto",
+                    isDownloaded && "text-green-500"
+                  )}
+                >
+                  {isDownloaded ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {isDownloaded ? "Downloaded!" : "Download"}
+                </Button>
+              </div>
             </CardFooter>
           </Card>
         )}

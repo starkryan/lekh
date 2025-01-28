@@ -5,7 +5,7 @@ import Content from "@/components/ui/content";
 import { MainNav } from "@/components/ui/mainnav";
 import { Footer } from "@/components/ui/footer";
 import { SplashScreen } from "@/components/ui/splash-screen";
-import TextAnimateDemo from "@/components/animate-text";
+// import TextAnimateDemo from "@/components/animate-text";
 
 export default function Page() {
   const [splashComplete, setSplashComplete] = useState(false);
@@ -28,7 +28,7 @@ export default function Page() {
       ) : (
         <div className="min-h-screen flex flex-col">
           <MainNav />
-          <TextAnimateDemo />
+          {/* <TextAnimateDemo /> */}
           <main className="flex-1 container mx-auto px-4 py-8">
             <Content />
           </main>
