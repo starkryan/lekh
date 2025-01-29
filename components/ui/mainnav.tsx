@@ -1,64 +1,31 @@
-import { useState } from "react";
 import Link from "next/link";
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import Image from "next/image";
 
 export function MainNav() {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="container flex h-16 items-center justify-between">
-      
-
-        {/* Center Logo */}
-        <div className="flex justify-center md:w-1/3">
-          <Link href="/" className="flex items-center">
-            <span className="font-bold text-xl">Logo</span>
+    <>
+      <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center">
+        <nav className="px-6 py-2.5 rounded-full border bg-background/80 backdrop-blur-lg shadow-lg hover:shadow-xl hover:bg-background/90 transition-all duration-300">
+          <Link 
+            href="/" 
+            className="flex items-center gap-2.5"
+          >
+            <div className="relative w-8 h-8 overflow-hidden rounded-full border border-primary/20">
+              <Image
+                src="/logo.png"
+                alt="Likhni Logo"
+                fill
+                sizes="50px"
+                className="object-cover"
+                priority
+              />
+            </div>
+            <span className="font-semibold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-foreground">Likhni</span>
           </Link>
-        </div>
-
-        {/* Right Section */}
-        <div className="flex items-center justify-end md:w-1/3">
-          {/* Desktop Sign In */}
-          
-
-          {/* Mobile Menu */}
-          <div className="md:hidden">
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:bg-transparent">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px]">
-                <nav className="flex flex-col space-y-4 mt-8">
-                  <Button
-                    asChild
-                    variant="ghost"
-                    className="justify-start"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <Link href="/about">About</Link>
-                  </Button>
-                  <div className="pt-4 border-t">
-                    <Button asChild variant="ghost" className="w-full justify-start">
-                      <Link href="/signin">Sign in</Link>
-                    </Button>
-                  </div>
-                </nav>
-              </SheetContent>
-            </Sheet>
-          </div>
-        </div>
-      </nav>
-    </header>
+        </nav>
+      </header>
+      <div className="h-24" aria-hidden="true" />
+    </>
   );
 }
 

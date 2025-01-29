@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { DotPattern } from "./dot-pattern";
+import Image from "next/image";
+import BlurText from "./blur-text";
 
 interface SplashScreenProps {
   className?: string;
@@ -17,7 +19,7 @@ export function SplashScreen({ className, onComplete }: SplashScreenProps) {
     const timer = setTimeout(() => {
       setIsVisible(false);
       onComplete?.();
-    }, 2500);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
@@ -36,46 +38,67 @@ export function SplashScreen({ className, onComplete }: SplashScreenProps) {
         >
           <DotPattern />
           <motion.div
-            className="flex flex-col items-center gap-6 relative z-10"
+            className="flex flex-col items-center gap-8 relative z-10"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            {/* Logo or Brand Icon */}
+            {/* Logo */}
             <motion.div
-              className="relative h-24 w-24"
-              initial={{ y: 20 }}
-              animate={{ y: 0 }}
+              className="relative"
+              initial={{ y: 20, scale: 0.8 }}
+              animate={{ y: 0, scale: 1 }}
               transition={{
                 duration: 0.8,
                 type: "spring",
                 stiffness: 100,
               }}
             >
-              <div className="absolute inset-0 animate-pulse rounded-full bg-primary/20" />
-              <div className="absolute inset-2 rounded-full bg-primary/40" />
-              <div className="absolute inset-4 rounded-full bg-primary" />
+              <div className="absolute -inset-4 rounded-full bg-primary/10 blur-xl animate-pulse" />
+              <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-primary/20 shadow-lg shadow-primary/10">
+                <Image
+                  src="/logo.png"
+                  alt="Likhni Logo"
+                  fill
+                  sizes="128px"
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent" />
+              </div>
+              <motion.div
+                className="absolute -inset-1 rounded-full border border-primary/20"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1.2, opacity: 1 }}
+                transition={{
+                  duration: 1,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                }}
+              />
             </motion.div>
 
             {/* Brand Name */}
-            <motion.h1
-              className="text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              Likhni
-            </motion.h1>
+            <motion.div className="space-y-4 text-center">
+              <motion.h1
+                className="text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-foreground"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
+                Likhni
+              </motion.h1>
 
-            {/* Tagline */}
-            <motion.p
-              className="text-muted-foreground"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-            >
-              Your Digital Writing Companion
-            </motion.p>
+              {/* Tagline */}
+              <motion.div
+                className="text-lg"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                <BlurText/>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </motion.div>
       )}

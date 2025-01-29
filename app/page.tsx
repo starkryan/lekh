@@ -5,6 +5,7 @@ import Content from "@/components/ui/content";
 import { MainNav } from "@/components/ui/mainnav";
 import { Footer } from "@/components/ui/footer";
 import { SplashScreen } from "@/components/ui/splash-screen";
+
 // import TextAnimateDemo from "@/components/animate-text";
 
 export default function Page() {
