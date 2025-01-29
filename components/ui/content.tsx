@@ -1,5 +1,6 @@
 "use client"
 
+
 import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -37,10 +38,7 @@ interface YouTubeOptions {
   language: string
 }
 
-interface ApiResponse {
-  message?: string
-  response?: string
-}
+
 
 interface EmailParts {
   subject?: string
@@ -262,13 +260,13 @@ function Content() {
         }
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       type === 'email' ? setEmailInput('') : setYoutubeInput('')
     } catch (error) {
-      if (error.name === 'AbortError') {
+      if (error instanceof Error && error.name === 'AbortError') {
         setError('Generation stopped')
         toast.info('Generation stopped')
       } else {
-        console.error('Error:', error)
         setError(error instanceof Error ? error.message : 'An unexpected error occurred')
       }
     } finally {

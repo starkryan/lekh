@@ -8,48 +8,10 @@ const openai = new OpenAI({
     apiKey: process.env.DEEPSEEK_API_KEY
 });
 
-const SYSTEM_PROMPT = `You are an expert email writer. Write professional, concise, and effective emails based on the user's requirements.
-The email should match the following parameters:
-- Style: {style} (e.g., Professional, Casual, Formal)
-- Purpose: {purpose} (e.g., Business, Personal, Academic)
-- Recipient Age Group: {ageGroup} (if specified)
-- Recipient Name: {recipientName}
-- Additional Context: {context}
-- Language: {language}
-
-Please write the email in {language}.
-
-Format the response in markdown with the following structure:
-
-## Subject
-[Clear and concise subject line]
-
-## Email Content
-Dear {recipientName},
-
-[Professional email content with proper body paragraphs]
-
-[Appropriate closing],
-[Your name/signature]
-
-## Tone Analysis
-- Formality: [Formal/Semi-formal/Casual]
-- Purpose: [Main objective of the email]
-- Key Points:
-  - [Key point 1]
-  - [Key point 2]
-  - [Additional key points]
-
-## Email Details
-- To: {recipientName}
-- Style Used: {style}
-- Purpose: {purpose}
-- Target Age Group: {ageGroup}
-- Language: {language}`;
 
 export async function POST(request: Request) {
     try {
-        const { message, emailOptions } = await request.json();
+        const { message, emailOptions = {} } = await request.json();
 
         if (!message) {
             return NextResponse.json(
@@ -115,20 +77,10 @@ export async function POST(request: Request) {
               }
             };
 
-            return languageMap[language] || languageMap['english'];
+            return languageMap[language as keyof typeof languageMap] || languageMap['english'];
         };
 
-        const getDefaultPrompt = (language: string) => {
-            const instructions = getLanguageInstructions(language);
-            return instructions.defaultPrompt || getLanguageInstructions('english').defaultPrompt;
-        };
 
-        const handleSimpleGreeting = (message: string, language: string) => {
-            const greetings = ['hi', 'hello', 'hey', 'namaste', 'hola', 'bonjour', 'ciao'];
-            return greetings.some(greeting => 
-                message.toLowerCase().trim().includes(greeting.toLowerCase())
-            );
-        };
 
         const handleUserInput = (message: string) => {
             const greetings = ['hi', 'hello', 'hey', 'namaste', 'hola', 'bonjour', 'ciao'];
@@ -145,7 +97,7 @@ export async function POST(request: Request) {
             return 'email';
         };
 
-        const getAssistantResponse = (language: string, type: string) => {
+        const getAssistantResponse = (language: 'english' | 'hindi' | 'hinglish', type: 'greeting' | 'question') => {
             const responses = {
                 'english': {
                     greeting: `I notice you've sent a simple greeting. I'm your AI email assistant! I can help you with:
@@ -234,15 +186,15 @@ Bas apna question puchiye ya bataiye aapko kya chahiye!`
 
         const inputType = handleUserInput(message);
         const systemPrompt = inputType !== 'email'
-            ? getAssistantResponse(emailOptions.language, inputType)
+            ? getAssistantResponse(emailOptions.language || 'english', inputType as 'greeting' | 'question')
             : `You are a professional email writer. Write an email based on the user's request.
-                ${getLanguageInstructions(emailOptions.language).instruction}
+                ${getLanguageInstructions(emailOptions.language || 'english').instruction}
 
                 Follow these guidelines:
-                - Writing Style: ${getLanguageInstructions(emailOptions.language).style}
-                - Email Style: ${emailOptions.style}
-                - Purpose: ${emailOptions.purpose}
-                - Target Age Group: ${emailOptions.ageGroup}
+                - Writing Style: ${getLanguageInstructions(emailOptions.language || 'english').style}
+                - Email Style: ${emailOptions.style || 'Professional'}
+                - Purpose: ${emailOptions.purpose || 'General'}
+                - Target Age Group: ${emailOptions.ageGroup || 'Not specified'}
                 ${emailOptions.recipientName ? `- Recipient Name: ${emailOptions.recipientName}` : ''}
                 ${emailOptions.context ? `- Additional Context: ${emailOptions.context}` : ''}
 
@@ -254,7 +206,7 @@ Bas apna question puchiye ya bataiye aapko kya chahiye!`
                 [Write the email content following the language-specific guidelines]
 
                 ## Analysis
-                ${getLanguageInstructions(emailOptions.language).analysis}
+                ${getLanguageInstructions(emailOptions.language || 'english').analysis}
                 Formality: [Indicate formality level]
                 Purpose: [State the purpose]
                 Key Points:
